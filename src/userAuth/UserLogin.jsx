@@ -1,25 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { login, logout } from '../templates/authSlice';
 
 export default function UserLogin() {
 
-    const {isAuthenticated, user} = useSelector((state)=>state);
     const dispatch = useDispatch();
+    const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-    const [name ,setName] = useState('Lambha');
-    const [email, setEmail] = useState('lambha@gmail.com');
+    const submithandle = () => {
+        // Simulating a login response with user details and a token
+        const fakeUser = {
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+        };
+        const fakeToken = '12345abcde';
 
-    const submithandle = ()=>{
-        if(name && email){
-            dispatch({type: 'LOGIN', payload: {name, email}});
-        }
-    }
-  return (
-    <div>
-        <h3>Userlogin</h3>
-        <p>Username: {user.name}</p>
-        <button onClick={submithandle}>Submit</button>
-        
-    </div>
-  )
+        dispatch(login({ user: fakeUser, token: fakeToken }));
+    };
+
+    const handleLogout = () => {
+        dispatch(logout());
+    };
+    return (
+
+        <div>
+            {isAuthenticated?
+            <div>
+                <h3>Userlogin</h3>
+                <p>Username: {user.name}</p>
+                <p>Email: {user.email}</p>
+                <button onClick={handleLogout}>logOut</button>
+                
+            </div>: 
+            <div><p>User not login currently</p>
+            <button onClick={submithandle}>Login</button>
+            
+            </div>
+}
+        </div>
+    )
 }

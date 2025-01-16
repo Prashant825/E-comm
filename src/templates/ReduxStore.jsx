@@ -1,30 +1,21 @@
-import { createStore } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from 'redux-persist/lib/storage';
+import authReducer from './authSlice';
 
-const initialState = {
-    isAuthenticated: false,
-    user: '',
-}
+const persistConfig = {
+  key: 'auth',
+  storage,
+ // whitelist: ['isAuthenticated', 'user', 'token'], // Persist only specific parts of the state
+};
 
-function authReducer(state = initialState, action) {
+const persistedReducer = persistReducer(persistConfig, authReducer);
 
-    switch (action.type) {
-        case 'LOGIN':
-            return {
-                isAuthenticated: true,
-                user: action.payload,
-            };
-        case 'LOGOUT':
-            return {
-                isAuthenticated: false,
-                user: '',
-            };
-        default:
-            return state;
-    }
+const store = configureStore({
+  reducer: {
+    auth: persistedReducer,
+  },
+});
 
-}
-
-//create Redux Store.
-const store = createStore(authReducer);
-
+export const persistor = persistStore(store);
 export default store;
